@@ -27,4 +27,6 @@ defmodule Beermonger.Router do
     conn = put_resp_content_type(conn, "application/json")
     send_resp(conn, 200, Poison.encode!(Beermonger.Products.products(@products_gateway, style)))
   end
+
+  match _, do: send_resp(conn, 404, "404 - Not Found")
 end
