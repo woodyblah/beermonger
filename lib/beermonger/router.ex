@@ -24,6 +24,7 @@ defmodule Beermonger.Router do
   end
 
   get "/products/:style" do
+    conn = put_resp_content_type(conn, "application/json")
     send_resp(conn, 200, Poison.encode!(Beermonger.Products.products(@products_gateway, style)))
   end
 end

@@ -1,11 +1,11 @@
 defmodule Beermonger.Mocks.EmptyProductsList do
-  def get_all_products do
+  def get_all_products(_) do
     []
   end
 end
 
 defmodule Beermonger.Mocks.OnlyOneBeerProductsList do
-  def get_all_products do
+  def get_all_products(_) do
     [
       %{
         name: "Double IPA",
@@ -18,7 +18,7 @@ defmodule Beermonger.Mocks.OnlyOneBeerProductsList do
 end
 
 defmodule Beermonger.Mocks.MixedProductsList do
-  def get_all_products do
+  def get_all_products(_) do
     [
       %{
         name: "Double IPA",

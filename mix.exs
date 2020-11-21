@@ -23,6 +23,7 @@ defmodule Beermonger.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:httpoison, "~> 1.7"},
       {:plug_cowboy, "~> 2.0"},
       {:poison, "~> 3.1"}
     ]

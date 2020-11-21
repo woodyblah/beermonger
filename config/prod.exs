@@ -1,4 +1,4 @@
 use Mix.Config
 
 config :beermonger,
-  products_gateway: NotImplemented!
+  products_gateway: Beermonger.ProductsGateway
