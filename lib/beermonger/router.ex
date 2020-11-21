@@ -25,7 +25,18 @@ defmodule Beermonger.Router do
 
   get "/products/:style" do
     conn = put_resp_content_type(conn, "application/json")
-    send_resp(conn, 200, Poison.encode!(Beermonger.Products.products(@products_gateway, style)))
+    send_resp(conn, 200, Poison.encode!(Beermonger.Products.products_list_by_style(@products_gateway, style)))
+  end
+
+  @acceptable_filters ["cheapest", "most_expensive"]
+
+  get "/product/:filter" do
+    if Enum.member?(@acceptable_filters, filter) do
+      conn = put_resp_content_type(conn, "application/json")
+      send_resp(conn, 200, Poison.encode!(Beermonger.Products.single_product_by_price(@products_gateway, filter)))
+    else
+      send_resp(conn, 404, "404 - Not Found")
+    end
   end
 
   match _, do: send_resp(conn, 404, "404 - Not Found")
