@@ -54,4 +54,94 @@ defmodule Beermonger.ProductsRouteTest do
     assert conn.status == 200
     assert conn.resp_body == Poison.encode!(expected_products)
   end
+
+  test 'getting a list of all products' do
+    conn = conn(:get, "/products")
+    conn = Beermonger.Router.call(conn, [])
+
+    expected_products = [
+      %{
+        name: "Double IPA",
+        image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
+        style: "beer",
+        price: 12.99
+      },
+      %{
+        name: "Dry Cider",
+        image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
+        style: "cider",
+        price: 6.99
+      },
+      %{
+        name: "Wheat Beer",
+        image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
+        style: "beer",
+        price: 7.49
+      }
+    ]
+
+    assert conn.state == :sent
+    assert conn.status == 200
+    assert conn.resp_body == Poison.encode!(expected_products)
+  end
+
+  test 'getting a list of all products sorted by price' do
+    conn = conn(:get, "/products?sortBy=price")
+    conn = Beermonger.Router.call(conn, [])
+
+    expected_products = [
+      %{
+        name: "Dry Cider",
+        image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
+        style: "cider",
+        price: 6.99
+      },
+      %{
+        name: "Wheat Beer",
+        image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
+        style: "beer",
+        price: 7.49
+      },
+      %{
+        name: "Double IPA",
+        image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
+        style: "beer",
+        price: 12.99
+      }
+    ]
+
+    assert conn.state == :sent
+    assert conn.status == 200
+    assert conn.resp_body == Poison.encode!(expected_products)
+  end
+
+  test 'getting a list of all products sorted by price descending' do
+    conn = conn(:get, "/products?sortBy=price&orderBy=desc")
+    conn = Beermonger.Router.call(conn, [])
+
+    expected_products = [
+      %{
+        name: "Double IPA",
+        image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
+        style: "beer",
+        price: 12.99
+      },
+      %{
+        name: "Wheat Beer",
+        image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
+        style: "beer",
+        price: 7.49
+      },
+      %{
+        name: "Dry Cider",
+        image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
+        style: "cider",
+        price: 6.99
+      }
+    ]
+
+    assert conn.state == :sent
+    assert conn.status == 200
+    assert conn.resp_body == Poison.encode!(expected_products)
+  end
 end

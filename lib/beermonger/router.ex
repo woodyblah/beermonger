@@ -9,10 +9,6 @@ defmodule Beermonger.Router do
 
   # responsible for matching routes
   plug(:match)
-  # Using Poison for JSON decoding
-  # Note, order of plugs is important, by placing this _after_ the 'match' plug,
-  # we will only parse the request AFTER there is a route match.
-  plug(Plug.Parsers, parsers: [:json], json_decoder: Poison)
   # responsible for dispatching responses
   plug(:dispatch)
 
@@ -22,11 +18,25 @@ defmodule Beermonger.Router do
   get "/status" do
     send_resp(conn, 200, "OK!")
   end
-
   get "/products/:style" do
-    conn = put_resp_content_type(conn, "application/json")
-    send_resp(conn, 200, Poison.encode!(Beermonger.Products.products_list_by_style(@products_gateway, style)))
+    conn
+    |> put_resp_content_type("application/json")
+    |> send_resp(200, Poison.encode!(Beermonger.Products.products_list_by_style(@products_gateway, style)))
   end
+
+  get "/products" do
+    conn = conn
+    |> fetch_query_params()
+    |> put_resp_content_type("application/json")
+
+    send_resp(conn, 200, Poison.encode!(Beermonger.Products.products_list_sorted_by_attribute(@products_gateway, sort_by(conn.query_params), asc?(conn.query_params))))
+  end
+
+  defp sort_by(%{"sortBy" => attribute}), do: attribute
+  defp sort_by(_params), do: "name"
+
+  defp asc?(%{"orderBy" => "desc"}), do: false
+  defp asc?(_params), do: true
 
   @acceptable_filters ["cheapest", "most_expensive"]
 

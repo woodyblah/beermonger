@@ -54,6 +54,71 @@ defmodule Beermonger.ProductsTest do
     end
   end
 
+  describe "products_sorted_by_attribute/3" do
+    test "given an empty data store it returns an empty list of products" do
+      assert Beermonger.Products.products_list_sorted_by_attribute(
+               Beermonger.Mocks.EmptyProductsList,
+               "price",
+               true
+             ) == []
+    end
+
+    test "given a store containing many products it returns the list of products sorted by the attribute" do
+      assert Beermonger.Products.products_list_sorted_by_attribute(
+               Beermonger.Mocks.MixedProductsList,
+               "price",
+               true
+             ) == [
+               %{
+                 name: "Dry Cider",
+                 image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
+                 style: "cider",
+                 price: 6.99
+               },
+               %{
+                 name: "Wheat Beer",
+                 image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
+                 style: "beer",
+                 price: 7.49
+               },
+               %{
+                 name: "Double IPA",
+                 image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
+                 style: "beer",
+                 price: 12.99
+               }
+             ]
+    end
+
+    test "given a store containing many products it returns the list of products sorted by the attribute in descending order when requested" do
+      assert Beermonger.Products.products_list_sorted_by_attribute(
+               Beermonger.Mocks.MixedProductsList,
+               "price",
+               false
+             ) == [
+               %{
+                 name: "Double IPA",
+                 image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
+                 style: "beer",
+                 price: 12.99
+               },
+
+               %{
+                 name: "Wheat Beer",
+                 image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
+                 style: "beer",
+                 price: 7.49
+               },
+               %{
+                 name: "Dry Cider",
+                 image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
+                 style: "cider",
+                 price: 6.99
+               }
+             ]
+    end
+  end
+
   describe "single_product_by_price/2" do
     test "given an empty data store it returns an empty object" do
       assert Beermonger.Products.single_product_by_price(Beermonger.Mocks.EmptyProductsList, "cheapest") == %{}
