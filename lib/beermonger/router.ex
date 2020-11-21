@@ -16,8 +16,14 @@ defmodule Beermonger.Router do
   # responsible for dispatching responses
   plug(:dispatch)
 
+  @products_gateway Application.get_env(:beermonger, :products_gateway)
+
   # A simple route to test that the server is up
   get "/status" do
     send_resp(conn, 200, "OK!")
+  end
+
+  get "/products/:style" do
+    send_resp(conn, 200, Poison.encode!(Beermonger.Products.products(@products_gateway, style)))
   end
 end
