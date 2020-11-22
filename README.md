@@ -27,7 +27,7 @@ There are query string parameters for this route for sorting and ordering, e.g
 
 ### Web interface
 
-Served at `/` there is a web interface that consumes the above API methods and privides some basic user interaction to adjust the filtering and sorting of the list of products.
+Served at `/` there is a web interface that consumes the above API methods and privides some basic user interaction to adjust the filtering and sorting of the list of products. You can change the list sorting by clicking on the table headers.
 
 ### Running locally
 
