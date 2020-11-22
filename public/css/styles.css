@@ -1,0 +1,12 @@
+.single_product {
+    float: left;
+    padding-bottom: 50px;
+}
+
+#products_list {
+    clear: left
+}
+
+#products_list td {
+    min-width: 60px;
+}
