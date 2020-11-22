@@ -22,19 +22,45 @@ loadProductsList = function(path) {
     $.get(path, function(products_list) {
         var new_table = '';
         products_list.forEach(function(product) { new_table += productsListTableRow(product);});
+        // replace whole table at once to avoid visual glitches due to slow responses
         $("#products_list table tbody").html(new_table)
     });
 };
 
-var currentSort = null;
-var currentOrder = null;
+let currentFilter = null;
+
+filterBy = function(style) {
+    if (currentFilter === null) {
+        currentFilter = style;
+        currentSort = null;
+        currentOrder = null;
+        loadProductsList(`products/${style}`)
+    } else if (currentFilter === style) {
+        currentFilter = null;
+        loadProductsList(`products`)
+    } else {
+
+        $(`#${currentFilter}_filter`).prop("checked", false);
+        currentFilter = style;
+        loadProductsList(`products/${style}`)
+    }
+};
+
+let currentSort = null;
+let currentOrder = null;
 
 capitalise = function(string) { return string.charAt(0).toUpperCase() + string.slice(1) };
 
 sortTable = function(attribute) {
+    // sorting currently not implemented on filtered list
+    if (currentFilter !== null) {
+        return null
+    }
+    // remove sorting visual queues if changing what we sort by
     if (currentSort !== null) {
         $(`#products_list_${currentSort}_header`).text(`${capitalise(currentSort)}`);
     }
+    // swap to descending sort if sorting by the same attribute
     if(attribute === currentSort && currentOrder !== "desc") {
         loadProductsList(`products?sortBy=${attribute}&orderBy=desc`);
         $(`#products_list_${attribute}_header`).text(`${capitalise(attribute)} ▼`);

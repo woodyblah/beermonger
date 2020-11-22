@@ -45,6 +45,11 @@
 </div>
 
 <div id="products_list">
+    <fieldset>
+        <legend>Filter</legend>
+        <input id="beer_filter" type="checkbox" name="filter" value="beer" onchange="filterBy('beer')">Beers<br>
+        <input id="cider_filter" type="checkbox" name="filter" value="cider" onchange="filterBy('cider')">Ciders<br>
+    </fieldset>
     <table>
         <thead>
             <tr>
