@@ -28,45 +28,48 @@ loadProductsList = function(path) {
 };
 
 let currentFilter = null;
-
-filterBy = function(style) {
-    if (currentFilter === null) {
-        currentFilter = style;
-        currentSort = null;
-        currentOrder = null;
-        loadProductsList(`products/${style}`)
-    } else if (currentFilter === style) {
-        currentFilter = null;
-        loadProductsList(`products`)
-    } else {
-
-        $(`#${currentFilter}_filter`).prop("checked", false);
-        currentFilter = style;
-        loadProductsList(`products/${style}`)
-    }
-};
-
 let currentSort = null;
 let currentOrder = null;
+
+filterBy = function(style) {
+    var path = '';
+    if (currentFilter === null) {
+        currentFilter = style;
+        path = `products/${style}`
+    } else if (currentFilter === style) {
+        currentFilter = null;
+        path = `products`
+    } else {
+        $(`#${currentFilter}_filter`).prop("checked", false);
+        currentFilter = style;
+        path = `products/${style}`
+    }
+    // keep current sorting
+    if (currentSort !== null) {
+        path += `?sortBy=${currentSort}`
+        if (currentOrder === 'desc') {
+            path += `&orderBy=desc`
+        }
+    }
+    loadProductsList(path)
+};
 
 capitalise = function(string) { return string.charAt(0).toUpperCase() + string.slice(1) };
 
 sortTable = function(attribute) {
-    // sorting currently not implemented on filtered list
-    if (currentFilter !== null) {
-        return null
-    }
+    // keep current sorting
+    path = (currentFilter === null) ? 'products' : `products/${currentFilter}`;
     // remove sorting visual queues if changing what we sort by
     if (currentSort !== null) {
         $(`#products_list_${currentSort}_header`).text(`${capitalise(currentSort)}`);
     }
     // swap to descending sort if sorting by the same attribute
     if(attribute === currentSort && currentOrder !== "desc") {
-        loadProductsList(`products?sortBy=${attribute}&orderBy=desc`);
+        loadProductsList(`${path}?sortBy=${attribute}&orderBy=desc`);
         $(`#products_list_${attribute}_header`).text(`${capitalise(attribute)} ▼`);
         currentOrder = "desc";
     } else {
-        loadProductsList(`products?sortBy=${attribute}`);
+        loadProductsList(`${path}?sortBy=${attribute}`);
         $(`#products_list_${attribute}_header`).text(`${capitalise(attribute)} ▲`);
         currentSort = attribute;
         currentOrder = "asc";
