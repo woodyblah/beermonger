@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/woodyblah/beermonger.svg?branch=main)](https://travis-ci.com/woodyblah/beermonger)
+
 # Beermonger
 
 Beermonger is a REST API and Web UI built on top of the data made available at http://api.eebria.com
