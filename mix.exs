@@ -16,7 +16,7 @@ defmodule Beermonger.MixProject do
   def application do
     [
       extra_applications: [:logger, :plug_cowboy],
-      mod: {Beermonger.Application, []}
+      mod: {Beermonger.Application, [env: Mix.env()]}
     ]
   end
 

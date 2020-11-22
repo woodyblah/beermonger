@@ -6,12 +6,12 @@ defmodule Beermonger.Application do
   use Application
 
   @impl true
-  def start(_type, _args) do
+  def start(_type, args) do
     children = [
       Plug.Cowboy.child_spec(
         scheme: :http,
         plug: Beermonger.Router,
-        options: [port: 8080]
+        options: [port: port(args)]
       )
     ]
 
@@ -20,4 +20,7 @@ defmodule Beermonger.Application do
     opts = [strategy: :one_for_one, name: Beermonger.Supervisor]
     Supervisor.start_link(children, opts)
   end
+
+  defp port(env: :prod), do: 80
+  defp port(_args), do: 8080
 end
