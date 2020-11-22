@@ -22,5 +22,6 @@ defmodule Beermonger.Application do
   end
 
   defp port(env: :prod), do: 80
-  defp port(_args), do: 8080
+  defp port(env: :dev), do: 8080
+  defp port(_args), do: 8888
 end

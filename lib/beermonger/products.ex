@@ -2,18 +2,22 @@ defmodule Beermonger.Products do
 
   @http_client HTTPoison
 
-  def products_list_by_style(products_gateway, style) do
+  def products_list(products_gateway, nil) do
+    products_gateway.get_all_products(@http_client)
+  end
+
+  def products_list(products_gateway, style) do
     products_gateway.get_all_products(@http_client)
     |> Enum.filter(fn %{style: s} -> s == style end)
   end
 
-  def products_list_sorted_by_attribute(products_gateway, attribute, true) do
-    products_gateway.get_all_products(@http_client)
+  def products_list(products_gateway, style, attribute, true) do
+    products_list(products_gateway, style)
     |> Enum.sort_by(fn product -> product[String.to_atom(attribute)] end)
   end
 
-  def products_list_sorted_by_attribute(products_gateway, attribute, false) do
-    products_list_sorted_by_attribute(products_gateway, attribute, true)
+  def products_list(products_gateway, style, attribute, false) do
+    products_list(products_gateway, style, attribute, true)
     |> Enum.reverse()
   end
 

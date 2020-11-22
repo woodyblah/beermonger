@@ -7,7 +7,6 @@ defmodule Beermonger.Router do
 
   @public_files_path Application.get_env(:beermonger, :public_files_path)
   @products_gateway Application.get_env(:beermonger, :products_gateway)
-  @hostname Application.get_env(:beermonger, :hostname)
 
   # This module is a Plug, that also implements it's own plug pipeline, below:
 
@@ -23,17 +22,19 @@ defmodule Beermonger.Router do
   end
 
   get "/products/:style" do
-    conn
-    |> put_resp_content_type("application/json")
-    |> send_resp(200, Poison.encode!(Beermonger.Products.products_list_by_style(@products_gateway, style)))
+    conn = conn
+           |> fetch_query_params()
+           |> put_resp_content_type("application/json")
+
+    send_resp(conn, 200, Poison.encode!(Beermonger.Products.products_list(@products_gateway, style, sort_by(conn.query_params), asc?(conn.query_params))))
   end
 
   get "/products" do
     conn = conn
-    |> fetch_query_params()
-    |> put_resp_content_type("application/json")
+           |> fetch_query_params()
+           |> put_resp_content_type("application/json")
 
-    send_resp(conn, 200, Poison.encode!(Beermonger.Products.products_list_sorted_by_attribute(@products_gateway, sort_by(conn.query_params), asc?(conn.query_params))))
+    send_resp(conn, 200, Poison.encode!(Beermonger.Products.products_list(@products_gateway, nil, sort_by(conn.query_params), asc?(conn.query_params))))
   end
 
   defp sort_by(%{"sortBy" => attribute}), do: attribute
@@ -58,5 +59,5 @@ defmodule Beermonger.Router do
   get "/css/styles.css", do: send_file(conn, 200, "#{@public_files_path}css/styles.css")
   get "/js/scripts.js", do: send_file(conn, 200, "#{@public_files_path}js/scripts.js")
 
-  match _, do: send_resp(conn, 404, "404 - Not Found catchall")
+  match _, do: send_resp(conn, 404, "404 - Not Found")
 end

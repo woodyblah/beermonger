@@ -1,21 +1,21 @@
 defmodule Beermonger.ProductsTest do
   use ExUnit.Case
 
-  describe "products/2" do
+  describe "products_list/2" do
     test "given an empty data store it returns an empty list of products for the given style" do
-      assert Beermonger.Products.products_list_by_style(Beermonger.Mocks.EmptyProductsList, "beer") == []
+      assert Beermonger.Products.products_list(Beermonger.Mocks.EmptyProductsList, "beer") == []
     end
 
     test "given a populated data store it returns an empty list of products for a style that does not appear in the list" do
-      assert Beermonger.Products.products_list_by_style(Beermonger.Mocks.MixedProductsList, "vegetable") == []
+      assert Beermonger.Products.products_list(Beermonger.Mocks.MixedProductsList, "vegetable") == []
     end
 
     test "given a data store populated only with beers it returns an empty list of products for ciders" do
-      assert Beermonger.Products.products_list_by_style(Beermonger.Mocks.OnlyOneBeerProductsList, "cider") == []
+      assert Beermonger.Products.products_list(Beermonger.Mocks.OnlyOneBeerProductsList, "cider") == []
     end
 
     test "given a data store containing only one beer, this item is returned when requesting a list of beers" do
-      assert Beermonger.Products.products_list_by_style(Beermonger.Mocks.OnlyOneBeerProductsList, "beer") == [
+      assert Beermonger.Products.products_list(Beermonger.Mocks.OnlyOneBeerProductsList, "beer") == [
                %{
                  name: "Double IPA",
                  image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
@@ -26,7 +26,7 @@ defmodule Beermonger.ProductsTest do
     end
 
     test "given a data store containing many products, only beers item are returned when requesting a list of beers" do
-      assert Beermonger.Products.products_list_by_style(Beermonger.Mocks.MixedProductsList, "beer") == [
+      assert Beermonger.Products.products_list(Beermonger.Mocks.MixedProductsList, "beer") == [
                %{
                  name: "Double IPA",
                  image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
@@ -43,7 +43,7 @@ defmodule Beermonger.ProductsTest do
     end
 
     test "given a data store containing many products, only cider item are returned when requesting a list of ciders" do
-      assert Beermonger.Products.products_list_by_style(Beermonger.Mocks.MixedProductsList, "cider") == [
+      assert Beermonger.Products.products_list(Beermonger.Mocks.MixedProductsList, "cider") == [
                %{
                  name: "Dry Cider",
                  image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
@@ -52,20 +52,45 @@ defmodule Beermonger.ProductsTest do
                }
              ]
     end
+
+    test "given a data store containing many products, and a nil filter, all items are returned" do
+      assert Beermonger.Products.products_list(Beermonger.Mocks.MixedProductsList, nil) == [
+               %{
+                 name: "Double IPA",
+                 image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
+                 style: "beer",
+                 price: 12.99
+               },
+               %{
+                 name: "Dry Cider",
+                 image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
+                 style: "cider",
+                 price: 6.99
+               },
+               %{
+                 name: "Wheat Beer",
+                 image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
+                 style: "beer",
+                 price: 7.49
+               },
+             ]
+    end
   end
 
-  describe "products_sorted_by_attribute/3" do
+  describe "products_list/4" do
     test "given an empty data store it returns an empty list of products" do
-      assert Beermonger.Products.products_list_sorted_by_attribute(
+      assert Beermonger.Products.products_list(
                Beermonger.Mocks.EmptyProductsList,
+               nil,
                "price",
                true
              ) == []
     end
 
     test "given a store containing many products it returns the list of products sorted by the attribute" do
-      assert Beermonger.Products.products_list_sorted_by_attribute(
+      assert Beermonger.Products.products_list(
                Beermonger.Mocks.MixedProductsList,
+               nil,
                "price",
                true
              ) == [
@@ -91,8 +116,9 @@ defmodule Beermonger.ProductsTest do
     end
 
     test "given a store containing many products it returns the list of products sorted by the attribute in descending order when requested" do
-      assert Beermonger.Products.products_list_sorted_by_attribute(
+      assert Beermonger.Products.products_list(
                Beermonger.Mocks.MixedProductsList,
+               nil,
                "price",
                false
              ) == [
@@ -114,6 +140,29 @@ defmodule Beermonger.ProductsTest do
                  image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
                  style: "cider",
                  price: 6.99
+               }
+             ]
+    end
+
+    test "given a store containing many products it returns the list of only beer products sorted by the attribute in descending order when requested" do
+      assert Beermonger.Products.products_list(
+               Beermonger.Mocks.MixedProductsList,
+               "beer",
+               "price",
+               false
+             ) == [
+               %{
+                 name: "Double IPA",
+                 image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
+                 style: "beer",
+                 price: 12.99
+               },
+
+               %{
+                 name: "Wheat Beer",
+                 image: "https://www.eebria.com/assets/images/v3/icons/suggestion-tool.png",
+                 style: "beer",
+                 price: 7.49
                }
              ]
     end
