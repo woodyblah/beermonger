@@ -5,6 +5,10 @@ defmodule Beermonger.Router do
 
   use Plug.Router
 
+  @public_files_path Application.get_env(:beermonger, :public_files_path)
+  @products_gateway Application.get_env(:beermonger, :products_gateway)
+  @hostname Application.get_env(:beermonger, :hostname)
+
   # This module is a Plug, that also implements it's own plug pipeline, below:
 
   # responsible for matching routes
@@ -12,12 +16,12 @@ defmodule Beermonger.Router do
   # responsible for dispatching responses
   plug(:dispatch)
 
-  @products_gateway Application.get_env(:beermonger, :products_gateway)
 
   # A simple route to test that the server is up
   get "/status" do
     send_resp(conn, 200, "OK!")
   end
+
   get "/products/:style" do
     conn
     |> put_resp_content_type("application/json")
@@ -49,5 +53,10 @@ defmodule Beermonger.Router do
     end
   end
 
-  match _, do: send_resp(conn, 404, "404 - Not Found")
+  #UI routes
+  get "/", do: send_file(conn, 200, "#{@public_files_path}index.html")
+  get "/css/styles.css", do: send_file(conn, 200, "#{@public_files_path}css/styles.css")
+  get "/js/scripts.js", do: send_file(conn, 200, "#{@public_files_path}js/scripts.js")
+
+  match _, do: send_resp(conn, 404, "404 - Not Found catchall")
 end
