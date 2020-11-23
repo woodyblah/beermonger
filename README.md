@@ -33,7 +33,7 @@ Served at `/` there is a web interface that consumes the above API methods and p
 
 To build and run the app locally you will need Elixir v1.11, details on installing this can be found [here](https://elixir-lang.org/install.html)
 
-Once elixir is installed simply run `mix run --no-halt` to run the application in development mode, it should become accessible at http://localhost:8080
+Once elixir is installed you will need to install the dependencies, you can do this with `mix deps.get`, then simply run `mix run --no-halt` to run the application in development mode, it should become accessible at http://localhost:8080
 
 To run the unit tests run: `mix test`
 
